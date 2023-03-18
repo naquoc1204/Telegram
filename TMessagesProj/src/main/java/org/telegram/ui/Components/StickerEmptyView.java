@@ -256,8 +256,8 @@ public class StickerEmptyView extends FrameLayout implements NotificationCenter.
                 stickerView.getImageReceiver().setAutoRepeat(2);
             }
         } else {
-            MediaDataController.getInstance(currentAccount).loadStickersByEmojiOrName(AndroidUtilities.STICKERS_PLACEHOLDER_PACK_NAME, false, set == null);
-            stickerView.getImageReceiver().clearImage();
+            //MediaDataController.getInstance(currentAccount).loadStickersByEmojiOrName(AndroidUtilities.STICKERS_PLACEHOLDER_PACK_NAME, false, set == null);
+            //stickerView.getImageReceiver().clearImage();
         }
     }
 
