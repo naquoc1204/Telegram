@@ -213,6 +213,9 @@ import android.view.Window;
 import android.view.WindowManager;
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
 
+    private final static float CLICK_DRAG_TOLERANCE = 10;
+    private float downRawX, downRawY;
+    private float dX, dY;
     public final static boolean DISPLAY_SPEEDOMETER_IN_DOWNLOADS_SEARCH = true;
 
     private boolean canShowFilterTabsView;
@@ -3657,7 +3660,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             viewPage.bottomMenu.setLayoutParams(layoutParams);
             BadgeDrawable badge = viewPage.bottomMenu.getOrCreateBadge(R.id.contactsPage);
             badge.setVisible(true);
-            badge.setNumber(30);
+            badge.setNumber(301);
             contentView.addView(viewPage.bottomMenu, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
 
 //            viewPage.addView.setOnNavigationItemSelectedListener(
@@ -3917,7 +3920,16 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
         floatingButtonContainer = new FrameLayout(context);
         floatingButtonContainer.setVisibility(onlySelect && initialDialogsType != 10 || folderId != 0 ? View.GONE : View.VISIBLE);
-        contentView.addView(floatingButtonContainer, LayoutHelper.createFrame((Build.VERSION.SDK_INT >= 21 ? 56 : 60), (Build.VERSION.SDK_INT >= 21 ? 56 : 60), (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.BOTTOM, LocaleController.isRTL ? 14 : 0, 0, LocaleController.isRTL ? 0 : 14, 14));
+        contentView.addView(floatingButtonContainer, LayoutHelper.createFrame(
+                (Build.VERSION.SDK_INT >= 21 ? 56 : 60),
+                (Build.VERSION.SDK_INT >= 21 ? 56 : 60),
+                (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.BOTTOM,
+                LocaleController.isRTL ? 14 : 0,
+                0,
+                LocaleController.isRTL ? 0 : 14,
+                64)
+        );
+
         floatingButtonContainer.setOnClickListener(v -> {
             if (parentLayout != null && parentLayout.isInPreviewMode()) {
                 finishPreviewFragment();
@@ -3976,6 +3988,72 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
         updateFloatingButtonColor();
         floatingButtonContainer.addView(floatingButton, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+
+        floatingButtonContainer.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams)view.getLayoutParams();
+                int action = motionEvent.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+
+                    downRawX = motionEvent.getRawX();
+                    downRawY = motionEvent.getRawY();
+                    dX = view.getX() - downRawX;
+                    dY = view.getY() - downRawY;
+
+                    return true; // Consumed
+
+                }
+                else if (action == MotionEvent.ACTION_MOVE) {
+
+                    int viewWidth = view.getWidth();
+                    int viewHeight = view.getHeight();
+
+                    View viewParent = (View)view.getParent();
+                    int parentWidth = viewParent.getWidth();
+                    int parentHeight = viewParent.getHeight();
+
+                    float newX = motionEvent.getRawX() + dX;
+                    newX = Math.max(layoutParams.leftMargin, newX); // Don't allow the FAB past the left hand side of the parent
+                    newX = Math.min(parentWidth - viewWidth - layoutParams.rightMargin, newX); // Don't allow the FAB past the right hand side of the parent
+
+                    float newY = motionEvent.getRawY() + dY;
+                    newY = Math.max(layoutParams.topMargin, newY); // Don't allow the FAB past the top of the parent
+                    newY = Math.min(parentHeight - viewHeight - layoutParams.bottomMargin, newY); // Don't allow the FAB past the bottom of the parent
+
+                    view.animate()
+                            .x(newX)
+                            .y(newY)
+                            .setDuration(0)
+                            .start();
+
+                    return true; // Consumed
+
+                }
+                else if (action == MotionEvent.ACTION_UP) {
+
+                    float upRawX = motionEvent.getRawX();
+                    float upRawY = motionEvent.getRawY();
+
+                    float upDX = upRawX - downRawX;
+                    float upDY = upRawY - downRawY;
+
+                    if (Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE) { // A click
+                        return floatingButtonContainer.performClick();
+                    }
+                    else { // A drag
+                        return true; // Consumed
+                    }
+
+                }
+                else {
+                    return false;
+                }
+
+            }
+        });
 
         floatingProgressView = new RadialProgressView(context);
         floatingProgressView.setProgressColor(Theme.getColor(Theme.key_chats_actionIcon));
