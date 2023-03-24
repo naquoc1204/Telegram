@@ -337,7 +337,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setTheme(R.style.Theme_TMessages);
+        setTheme(R.style.AppThemeCustom);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
                 setTaskDescription(new ActivityManager.TaskDescription(null, null, Theme.getColor(Theme.key_actionBarDefault) | 0xff000000));

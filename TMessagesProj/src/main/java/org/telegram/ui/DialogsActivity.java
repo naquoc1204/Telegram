@@ -53,6 +53,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -83,6 +84,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScrollerCustom;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.telegram.messenger.AccountInstance;
 import org.telegram.messenger.AndroidUtilities;
@@ -204,7 +209,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
+import android.view.Window;
+import android.view.WindowManager;
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
 
     public final static boolean DISPLAY_SPEEDOMETER_IN_DOWNLOADS_SEARCH = true;
@@ -226,6 +232,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     public class ViewPage extends FrameLayout {
+
+        private BottomNavigationView bottomMenu;
         private DialogsRecyclerView listView;
         private LinearLayoutManager layoutManager;
         private DialogsAdapter dialogsAdapter;
@@ -2719,7 +2727,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 actionBar.setTitle(LocaleController.getString("SelectChat", R.string.SelectChat));
             }
             actionBar.setBackgroundColor(Theme.getColor(Theme.key_actionBarDefault));
-        } else {
+        }
+        else {
             if (searchString != null || folderId != 0) {
                 actionBar.setBackButtonDrawable(backDrawable = new BackDrawable(false));
             } else {
@@ -3432,6 +3441,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
                 onItemClick(view, position, viewPage.dialogsAdapter);
             });
+
+
             viewPage.listView.setOnItemLongClickListener(new RecyclerListView.OnItemLongClickListenerExtended() {
                 @Override
                 public boolean onItemClick(View view, int position, float x, float y) {
@@ -3636,6 +3647,37 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
             viewPage.listView.setEmptyView(folderId == 0 ? viewPage.progressView : null);
             viewPage.scrollHelper = new RecyclerAnimationScrollHelper(viewPage.listView, viewPage.layoutManager);
+
+            viewPage.bottomMenu = new BottomNavigationView(context);
+            //viewPage.bottomMenu.setLayoutParams(LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            viewPage.bottomMenu.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+            viewPage.bottomMenu.inflateMenu(R.menu.menu_bottom);
+            FrameLayout.LayoutParams layoutParams =LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.BOTTOM;
+            viewPage.bottomMenu.setLayoutParams(layoutParams);
+            BadgeDrawable badge = viewPage.bottomMenu.getOrCreateBadge(R.id.contactsPage);
+            badge.setVisible(true);
+            badge.setNumber(30);
+            contentView.addView(viewPage.bottomMenu, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
+
+//            viewPage.addView.setOnNavigationItemSelectedListener(
+//                    new BottomNavigationView.OnNavigationItemSelectedListener() {
+//                        @Override
+//                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                            switch (item.getItemId()) {
+//                                case R.id.contactsPage:
+//
+//                                    break;
+//                                case R.id.page2:
+//
+//                                    break;
+//                                case R.id.page3:
+//
+//                                    break;
+//                            }
+//                            return false;
+//                        }
+//                    });
 
             if (a != 0) {
                 viewPages[a].setVisibility(View.GONE);

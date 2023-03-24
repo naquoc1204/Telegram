@@ -67,6 +67,33 @@
         <item name="android:scrollbarDefaultDelayBeforeFade">400</item>
     </style>
 
+    <style name="AppThemeCustom" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBarOverlay">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:itemTextAppearance">@style/ActionBar.Transparent.TMessages.Item</item>
+        <item name="android:listViewStyle">@style/Theme.TMessages.ListView</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/list_selector_ex</item>
+        <item name="android:actionBarItemBackground">@drawable/bar_selector_style</item>
+        <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/bluesky_500</item>
+        <item name="colorPrimaryVariant">@color/bluesky_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Bottom Navigation-->
+
     <!-- TextView -->
 
     <style name="MyTextViewStyle" parent="android:Widget.Holo.Light.TextView">

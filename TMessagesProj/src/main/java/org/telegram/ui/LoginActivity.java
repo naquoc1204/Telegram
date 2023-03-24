@@ -2887,7 +2887,7 @@ public class LoginActivity extends BaseFragment {
                 try {
                     String number = tm.getLine1Number();
                     if (!TextUtils.isEmpty(number)) {
-                        settings.current_number = PhoneNumberUtils.compare(phone, number);
+                         settings.current_number = PhoneNumberUtils.compare(phone, number);
                         if (!settings.current_number) {
                             settings.allow_flashcall = false;
                         }
@@ -3340,7 +3340,8 @@ public class LoginActivity extends BaseFragment {
                 missedCallDescriptionSubtitle.setText(AndroidUtilities.replaceTags(LocaleController.getString("MissedCallDescriptionSubtitle2", R.string.MissedCallDescriptionSubtitle2)));
 
                 addView(missedCallDescriptionSubtitle, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 36, 28, 36, 12));
-            } else if (currentType == AUTH_TYPE_FLASH_CALL) {
+            }
+            else if (currentType == AUTH_TYPE_FLASH_CALL) {
                 confirmTextView.setGravity(Gravity.CENTER_HORIZONTAL);
                 centerContainer = new FrameLayout(context);
                 addView(centerContainer, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 0, 1f));
@@ -3363,7 +3364,8 @@ public class LoginActivity extends BaseFragment {
                 titleTextView.setText(overrideTitle != null ? overrideTitle : LocaleController.getString(R.string.YourCode));
                 innerLinearLayout.addView(titleTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 16, 0, 0));
                 innerLinearLayout.addView(confirmTextView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL, 0, 8, 0, 0));
-            } else {
+            }
+            else {
                 confirmTextView.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
 
                 FrameLayout frameLayout = new FrameLayout(context);
@@ -4388,7 +4390,8 @@ public class LoginActivity extends BaseFragment {
                         f.animateFocusedProgress(0);
                     }
 
-                    int reqId = ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+                    int reqId = ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() ->
+                    {
                         tryHideProgress(false, true);
 
                         boolean ok = false;
@@ -4410,10 +4413,12 @@ public class LoginActivity extends BaseFragment {
                                 params.putString("code", req.phone_code);
 
                                 animateSuccess(() -> setPage(VIEW_REGISTER, true, params, false));
-                            } else {
+                            }
+                            else {
                                 animateSuccess(() -> onAuthSuccess((TLRPC.TL_auth_authorization) response));
                             }
-                        } else {
+                        }
+                        else {
                             lastError = error.text;
                             if (error.text.contains("SESSION_PASSWORD_NEEDED")) {
                                 ok = true;
@@ -4491,7 +4496,8 @@ public class LoginActivity extends BaseFragment {
                                 AndroidUtilities.endIncomingCall();
                             }
                         }
-                    }), ConnectionsManager.RequestFlagFailOnServerErrors | ConnectionsManager.RequestFlagWithoutLogin);
+                    }
+                    ), ConnectionsManager.RequestFlagFailOnServerErrors | ConnectionsManager.RequestFlagWithoutLogin);
                     tryShowProgress(reqId, true);
                     showDoneButton(true, true);
                     break;
