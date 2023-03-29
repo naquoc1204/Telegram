@@ -6,19 +6,19 @@
         android:title="@string/Contacts">
 
     </item>
-    <item android:id="@+id/page2"
+    <item android:id="@+id/chatsPage"
         android:enabled="true"
         android:icon="@drawable/icon_selector_chats"
         android:title="@string/Chats">
 
     </item>
-    <item android:id="@+id/page3"
+    <item android:id="@+id/postsPage"
         android:enabled="true"
         android:icon="@drawable/icon_selector_posts"
         android:title="@string/Posts">
 
     </item>
-    <item android:id="@+id/page4"
+    <item android:id="@+id/settingsPage"
         android:enabled="true"
         android:icon="@drawable/icon_selector_settings"
         android:title="@string/Settings">

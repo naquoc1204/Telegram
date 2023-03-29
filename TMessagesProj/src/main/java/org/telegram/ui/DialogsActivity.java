@@ -209,8 +209,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import android.view.Window;
-import android.view.WindowManager;
+
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, FloatingDebugProvider {
 
     private final static float CLICK_DRAG_TOLERANCE = 10;
@@ -3663,24 +3662,22 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             badge.setNumber(301);
             contentView.addView(viewPage.bottomMenu, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM));
 
-//            viewPage.addView.setOnNavigationItemSelectedListener(
-//                    new BottomNavigationView.OnNavigationItemSelectedListener() {
-//                        @Override
-//                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                            switch (item.getItemId()) {
-//                                case R.id.contactsPage:
-//
-//                                    break;
-//                                case R.id.page2:
-//
-//                                    break;
-//                                case R.id.page3:
-//
-//                                    break;
-//                            }
-//                            return false;
-//                        }
-//                    });
+            viewPage.bottomMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    int itemId = item.getItemId();
+                    if (itemId == R.id.contactsPage) {
+                        return true;
+                    } else if (itemId == R.id.chatsPage) {
+                        return true;
+                    } else if (itemId == R.id.postsPage) {
+                        return true;
+                    } else if (itemId == R.id.settingsPage) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
 
             if (a != 0) {
                 viewPages[a].setVisibility(View.GONE);
@@ -3951,7 +3948,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
                 Bundle args = new Bundle();
                 args.putBoolean("destroyAfterSelect", true);
-                presentFragment(new ContactsActivity(args));
+                presentFragment(new BlogsActivity(args));
             }
         });
 
