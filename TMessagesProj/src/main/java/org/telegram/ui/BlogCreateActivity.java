@@ -328,12 +328,12 @@ public class BlogCreateActivity extends BaseFragment implements NotificationCent
         }
     }
     private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable statusDrawable;
-    private SelectAnimatedEmojiDialogTest1.SelectAnimatedEmojiDialogWindow selectAnimatedEmojiDialog;
+    private SelectAnimatedBlogTypeDialog.SelectAnimatedEmojiDialogWindow selectAnimatedEmojiDialog;
     public void showSelectStatusDialog() {
         if (selectAnimatedEmojiDialog != null || SharedConfig.appLocked) {
             return;
         }
-        final SelectAnimatedEmojiDialogTest1.SelectAnimatedEmojiDialogWindow[] popup = new SelectAnimatedEmojiDialogTest1.SelectAnimatedEmojiDialogWindow[1];
+        final SelectAnimatedBlogTypeDialog.SelectAnimatedEmojiDialogWindow[] popup = new SelectAnimatedBlogTypeDialog.SelectAnimatedEmojiDialogWindow[1];
         int xoff = 0, yoff = 0;
         SimpleTextView actionBarTitle = actionBar.getTitleTextView();
         if (actionBarTitle != null && actionBarTitle.getRightDrawable() != null) {
@@ -343,9 +343,9 @@ public class BlogCreateActivity extends BaseFragment implements NotificationCent
             yoff = -(actionBar.getHeight() - AndroidUtilities.rectTmp2.centerY()) - AndroidUtilities.dp(16);
             xoff = AndroidUtilities.rectTmp2.centerX() - AndroidUtilities.dp(16);
         }
-        SelectAnimatedEmojiDialogTest1 popupLayout = new SelectAnimatedEmojiDialogTest1(this, getContext(), xoff, SelectAnimatedEmojiDialogTest1.TYPE_EMOJI_STATUS, getResourceProvider()) {
+        SelectAnimatedBlogTypeDialog popupLayout = new SelectAnimatedBlogTypeDialog(this, getContext(), xoff, SelectAnimatedBlogTypeDialog.TYPE_EMOJI_STATUS, getResourceProvider()) {
         };
-        popup[0] = selectAnimatedEmojiDialog = new SelectAnimatedEmojiDialogTest1.SelectAnimatedEmojiDialogWindow(popupLayout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT) {
+        popup[0] = selectAnimatedEmojiDialog = new SelectAnimatedBlogTypeDialog.SelectAnimatedEmojiDialogWindow(popupLayout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT) {
             @Override
             public void dismiss() {
                 super.dismiss();
