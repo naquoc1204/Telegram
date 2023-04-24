@@ -490,7 +490,7 @@ public class BlogsActivity  extends BaseFragment implements NotificationCenter.N
                     } else {
                         if (row == 0) {
                             Bundle args = new Bundle();
-                            presentFragment(new GroupCreateActivity(args), false);
+                            presentFragment(new BlogCreateActivity(args), false);
                         } else if (row == 1) {
                             Bundle args = new Bundle();
                             args.putBoolean("onlyUsers", true);
