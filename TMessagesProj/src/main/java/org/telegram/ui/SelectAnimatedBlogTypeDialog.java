@@ -14,19 +14,15 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.util.LongSparseArray;
 import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
-
 import androidx.core.math.MathUtils;
-
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.messenger.MediaDataController;
@@ -35,7 +31,6 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBarPopupWindow;
-import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.CubicBezierInterpolator;
@@ -44,7 +39,6 @@ import org.telegram.ui.Components.EmojiTabsStrip;
 import org.telegram.ui.Components.EmojiView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
-
 import java.util.ArrayList;
 
 public class SelectAnimatedBlogTypeDialog extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
@@ -61,11 +55,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
 
     @SuppressLint("SoonBlockedPrivateApi")
     public static class SelectAnimatedEmojiDialogWindow extends PopupWindow {
-        private ViewTreeObserver.OnScrollChangedListener mSuperScrollListener;
-        private ViewTreeObserver mViewTreeObserver;
-        private static final ViewTreeObserver.OnScrollChangedListener NOP = () -> {
-            /* do nothing */
-        };
 
         public SelectAnimatedEmojiDialogWindow(View anchor) {
             super(anchor);
@@ -86,30 +75,11 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
 
-        private void unregisterListener() {
-            if (mSuperScrollListener != null && mViewTreeObserver != null) {
-                if (mViewTreeObserver.isAlive()) {
-                    mViewTreeObserver.removeOnScrollChangedListener(mSuperScrollListener);
-                }
-                mViewTreeObserver = null;
-            }
-        }
-
         private void registerListener(View anchor) {
             if (getContentView() instanceof SelectAnimatedBlogTypeDialog) {
                 ((SelectAnimatedBlogTypeDialog) getContentView()).onShow(this::dismiss);
             }
-            if (mSuperScrollListener != null) {
-                ViewTreeObserver vto = (anchor.getWindowToken() != null) ? anchor.getViewTreeObserver() : null;
-                if (vto != mViewTreeObserver) {
-                    if (mViewTreeObserver != null && mViewTreeObserver.isAlive()) {
-                        mViewTreeObserver.removeOnScrollChangedListener(mSuperScrollListener);
-                    }
-                    if ((mViewTreeObserver = vto) != null) {
-                        vto.addOnScrollChangedListener(mSuperScrollListener);
-                    }
-                }
-            }
+
         }
 
         public void dimBehind() {
@@ -162,7 +132,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
         @Override
         public void showAtLocation(View parent, int gravity, int x, int y) {
             super.showAtLocation(parent, gravity, x, y);
-            unregisterListener();
         }
 
         @Override
@@ -187,18 +156,16 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
     private ArrayList<EmojiView.EmojiPack> packs = new ArrayList<>();
     public boolean includeHint = false;
     private boolean drawBackground = true;
-    public boolean cancelPressed;
     ImageReceiver bigReactionImageReceiver = new ImageReceiver();
     private View emojiTabsShadow;
     private float scaleX, scaleY;
     private int topMarginDp;
-    private View animateExpandFromButton;
 
-    public SelectAnimatedBlogTypeDialog(BaseFragment baseFragment, Context context, Integer emojiX, int type, Theme.ResourcesProvider resourcesProvider) {
-        this(baseFragment, context, emojiX, type, resourcesProvider, 16);
+    public SelectAnimatedBlogTypeDialog(Context context, Integer emojiX, int type, Theme.ResourcesProvider resourcesProvider) {
+        this(context, emojiX, type, resourcesProvider, 16);
     }
 
-    public SelectAnimatedBlogTypeDialog(BaseFragment baseFragment, Context context, Integer emojiX, int type, Theme.ResourcesProvider resourcesProvider, int topPaddingDp) {
+    public SelectAnimatedBlogTypeDialog(Context context, Integer emojiX, int type, Theme.ResourcesProvider resourcesProvider, int topPaddingDp) {
         super(context);
         this.type = type;
         this.includeHint = MessagesController.getGlobalMainSettings().getInt("emoji" + (type == TYPE_EMOJI_STATUS ? "status" : "reaction") + "usehint", 0) < 3;
@@ -349,11 +316,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
 
     }
 
-    private long animateExpandStartTime = -1;
-    private int animateExpandFromPosition = -1, animateExpandToPosition = -1;
-    private boolean smoothScrolling = false;
-    private float animateExpandFromButtonTranslate;
-
 
     private ColorFilter premiumStarColorFilter;
     @Override
@@ -363,7 +325,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
 
     public void expand(int position, View expandButton) {
         int index = positionToExpand.get(position);
-        Integer from = null, count = null;
         if (index >= 0 && index < packs.size()) {
             EmojiView.EmojiPack pack = packs.get(index);
             if (pack.expanded) {
@@ -401,9 +362,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
         ArrayList<DrawingInBackgroundLine> lineDrawables = new ArrayList<>();
         ArrayList<DrawingInBackgroundLine> lineDrawablesTmp = new ArrayList<>();
         private boolean invalidated;
-
-        private LongSparseArray<AnimatedEmojiDrawable> animatedEmojiDrawables = new LongSparseArray<>();
-
         @Override
         public boolean drawChild(Canvas canvas, View child, long drawingTime) {
             return super.drawChild(canvas, child, drawingTime);
@@ -451,11 +409,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
                 }
             }
             lineDrawablesTmp.clear();
-
-            for (int i = 0; i < getChildCount(); ++i) {
-                View child = getChildAt(i);
-            }
-
             canvas.restoreToCount(restoreTo);
         }
 
@@ -561,7 +514,6 @@ public class SelectAnimatedBlogTypeDialog extends FrameLayout implements Notific
                 AndroidUtilities.runOnUIThread(() -> {
                 }, 120);
             });
-        } else if (id == NotificationCenter.groupStickersDidLoad) {
         }
     }
 

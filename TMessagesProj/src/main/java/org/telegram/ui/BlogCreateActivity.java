@@ -343,7 +343,7 @@ public class BlogCreateActivity extends BaseFragment implements NotificationCent
             yoff = -(actionBar.getHeight() - AndroidUtilities.rectTmp2.centerY()) - AndroidUtilities.dp(16);
             xoff = AndroidUtilities.rectTmp2.centerX() - AndroidUtilities.dp(16);
         }
-        SelectAnimatedBlogTypeDialog popupLayout = new SelectAnimatedBlogTypeDialog(this, getContext(), xoff, SelectAnimatedBlogTypeDialog.TYPE_EMOJI_STATUS, getResourceProvider()) {
+        SelectAnimatedBlogTypeDialog popupLayout = new SelectAnimatedBlogTypeDialog(getContext(), xoff, SelectAnimatedBlogTypeDialog.TYPE_EMOJI_STATUS, getResourceProvider()) {
         };
         popup[0] = selectAnimatedEmojiDialog = new SelectAnimatedBlogTypeDialog.SelectAnimatedEmojiDialogWindow(popupLayout, LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT) {
             @Override
